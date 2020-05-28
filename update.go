@@ -117,13 +117,15 @@ func (v *Value) Set(key string, value *Value) {
 //
 // The value must be unchanged during v lifetime.
 func (v *Value) SetArrayItem(idx int, value *Value) {
+	if v == nil || v.t != TypeArray {
+		return
+	}
+
 	if v.t == typeFreshArray {
 		v.a = append([]*Value{}, v.a...)
 		v.t = TypeArray
 	}
-	if v == nil || v.t != TypeArray {
-		return
-	}
+
 	for idx >= len(v.a) {
 		v.a = append(v.a, valueNull)
 	}

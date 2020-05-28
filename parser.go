@@ -2,10 +2,11 @@ package fastjson
 
 import (
 	"fmt"
-	"github.com/valyala/fastjson/fastfloat"
 	"strconv"
 	"strings"
 	"unicode/utf16"
+
+	"github.com/valyala/fastjson/fastfloat"
 )
 
 // Parser parses JSON.
@@ -71,11 +72,11 @@ func (p *Parser) getArray(c int) (v []*Value) {
 // Use Scanner if a stream of JSON values must be parsed.
 func (p *Parser) Parse(s string) (*Value, error) {
 	s = skipWS(s)
-    p.arr = p.arr[:0]
-    p.kv = p.kv[:0]
-    p.val = p.val[:0]
-    p.kvStack = p.kvStack[:0]
-    p.arrStack = p.arrStack[:0]
+	p.arr = p.arr[:0]
+	p.kv = p.kv[:0]
+	p.val = p.val[:0]
+	p.kvStack = p.kvStack[:0]
+	p.arrStack = p.arrStack[:0]
 	p.b = []byte(s)
 
 	v, tail, err := p.parseValue(b2s(p.b))
@@ -192,7 +193,7 @@ func (p *Parser) parseValue(s string) (*Value, string, error) {
 		if len(s) < len("null") || s[:len("null")] != "null" {
 			// Try parsing NaN
 			if len(s) >= 3 && strings.EqualFold(s[:3], "nan") {
-				v := c.getValue()
+				v := &p.getValue(1)[0]
 				v.t = TypeNumber
 				v.s = s[:3]
 				return v, s[3:], nil
@@ -221,7 +222,7 @@ func (p *Parser) parseArray(s string) (*Value, string, error) {
 	if s[0] == ']' {
 		v := &p.getValue(1)[0]
 		v.t = TypeArray
-        v.a = nil
+		v.a = nil
 		return v, s[1:], nil
 	}
 
@@ -267,7 +268,7 @@ func (p *Parser) parseObject(s string) (*Value, string, error) {
 	if s[0] == '}' {
 		v := &p.getValue(1)[0]
 		v.t = TypeObject
-        v.o.kvs = nil
+		v.o.kvs = nil
 		return v, s[1:], nil
 	}
 
